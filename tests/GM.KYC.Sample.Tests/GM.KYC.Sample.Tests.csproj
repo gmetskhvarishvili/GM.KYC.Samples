@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+        <PackageReference Include="xunit" Version="2.9.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <!-- The GM testing kit, published earlier this batch. -->
+        <PackageReference Include="GM.Testing" Version="1.0.0" />
+        <PackageReference Include="GM.Testing.AspNetCore" Version="1.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\GM.KYC\GM.KYC\GM.KYC.csproj" />
+        <ProjectReference Include="..\..\..\GM.KYC\GM.KYC.Identomat\GM.KYC.Identomat.csproj" />
+        <ProjectReference Include="..\..\GM.KYC.Sample.API\GM.KYC.Sample.API.csproj" />
+    </ItemGroup>
+
+</Project>
