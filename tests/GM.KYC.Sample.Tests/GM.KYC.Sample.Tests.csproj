@@ -17,11 +17,11 @@
         <!-- The GM testing kit, published earlier this batch. -->
         <PackageReference Include="GM.Testing" Version="1.0.0" />
         <PackageReference Include="GM.Testing.AspNetCore" Version="1.0.0" />
+        <PackageReference Include="GM.KYC" Version="1.0.0" />
+        <PackageReference Include="GM.KYC.Identomat" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\GM.KYC\GM.KYC\GM.KYC.csproj" />
-        <ProjectReference Include="..\..\..\GM.KYC\GM.KYC.Identomat\GM.KYC.Identomat.csproj" />
         <ProjectReference Include="..\..\GM.KYC.Sample.API\GM.KYC.Sample.API.csproj" />
     </ItemGroup>
 

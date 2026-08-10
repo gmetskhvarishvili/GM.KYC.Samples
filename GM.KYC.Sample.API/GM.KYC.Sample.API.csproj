@@ -6,17 +6,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
-    <!--
-      References the sibling GM.KYC source repo by project path so the sample builds against current
-      code. Once the KYC packages are published, swap these for PackageReference 1.0.0.
-    -->
+    <!-- Published-package form. Local dev against sibling source uses ProjectReference on feat/kyc-sample. -->
     <ItemGroup>
-        <ProjectReference Include="..\..\GM.KYC\GM.KYC\GM.KYC.csproj" />
-        <ProjectReference Include="..\..\GM.KYC\GM.KYC.Identomat\GM.KYC.Identomat.csproj" />
-        <ProjectReference Include="..\..\GM.KYC\GM.KYC.Persistence\GM.KYC.Persistence.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
+        <PackageReference Include="GM.KYC" Version="1.0.0" />
+        <PackageReference Include="GM.KYC.Identomat" Version="1.0.0" />
+        <PackageReference Include="GM.KYC.Persistence" Version="1.0.0" />
         <PackageReference Include="GM.FileStorage.Local" Version="1.1.0" />
         <PackageReference Include="GM.Caching" Version="1.0.0" />
         <PackageReference Include="GM.DistributedLock" Version="1.0.0" />
