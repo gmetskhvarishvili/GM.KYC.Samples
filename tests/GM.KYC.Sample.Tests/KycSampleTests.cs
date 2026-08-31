@@ -17,17 +17,17 @@ public class KycSampleTests
     private sealed class FakeProvider : IKycProvider
     {
         public string Name => "Fake";
-        public Task<ProviderSession> BeginAsync(InitiateVerificationRequest r, CancellationToken ct = default) =>
+        public Task<ProviderSession> BeginAsync(InitiateVerificationRequest request, CancellationToken cancellationToken = default) =>
             Task.FromResult(new ProviderSession { ProviderSessionId = "SES-1", VerificationUrl = "https://widget.identomat.com/?session_token=demo" });
-        public Task AttachDocumentAsync(ProviderDocumentSubmission s, CancellationToken ct = default) => Task.CompletedTask;
-        public Task AttachLivenessAsync(ProviderLivenessSubmission s, CancellationToken ct = default) => Task.CompletedTask;
-        public Task<VerificationResult> GetResultAsync(string id, CancellationToken ct = default) =>
+        public Task AttachDocumentAsync(ProviderDocumentSubmission submission, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task AttachLivenessAsync(ProviderLivenessSubmission submission, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task<VerificationResult> GetResultAsync(string providerSessionId, CancellationToken cancellationToken = default) =>
             Task.FromResult(new VerificationResult { Status = VerificationStatus.Approved });
     }
 
     private sealed class FakeWebhookProcessor : IKycWebhookProcessor
     {
-        public Task<KycWebhookOutcome> ProcessAsync(KycWebhookRequest r, CancellationToken ct = default) =>
+        public Task<KycWebhookOutcome> ProcessAsync(KycWebhookRequest request, CancellationToken cancellationToken = default) =>
             Task.FromResult(new KycWebhookOutcome { Handled = true, ProviderSessionId = "SES-1", Status = VerificationStatus.Approved });
     }
 
@@ -46,7 +46,7 @@ public class KycSampleTests
         using var factory = Factory();
         var client = factory.CreateClient();
 
-        using var response = await client.PostAsJsonAsync("/kyc/sessions", new { applicantReference = "user-1" });
+        using var response = await client.PostAsJsonAsync("/api/v1/kyc-sessions", new { applicantReference = "user-1" });
         var body = await response.ShouldBeOkAsync<SessionDto>();
 
         Assert.Equal("SES-1", body.SessionId);
@@ -60,7 +60,7 @@ public class KycSampleTests
         using var factory = Factory();
         var client = factory.CreateClient();
 
-        using var response = await client.GetAsync("/kyc/sessions/SES-1");
+        using var response = await client.GetAsync("/api/v1/kyc-sessions/SES-1");
         var body = await response.ShouldBeOkAsync<StatusDto>();
 
         Assert.Equal("Approved", body.Status);
@@ -72,7 +72,7 @@ public class KycSampleTests
         using var factory = Factory();
         var client = factory.CreateClient();
 
-        using var response = await client.PostAsync("/kyc/webhooks/identomat",
+        using var response = await client.PostAsync("/api/v1/kyc-webhooks/identomat",
             new StringContent("""{"session":"SES-1"}""", System.Text.Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

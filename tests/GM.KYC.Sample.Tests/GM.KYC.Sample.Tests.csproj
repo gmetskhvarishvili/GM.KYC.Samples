@@ -5,6 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+
+        <!--
+          Warnings are errors here too (inherited from Directory.Build.props). CA1707 is relaxed for
+          test code only: the mandated test name style is Method_Scenario_ExpectedResult, which uses
+          underscores by design.
+        -->
+        <NoWarn>$(NoWarn);CA1707</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

@@ -6,7 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
-    <!-- Published-package form. Local dev against sibling source uses ProjectReference on feat/kyc-sample. -->
     <ItemGroup>
         <PackageReference Include="GM.KYC" Version="1.0.0" />
         <PackageReference Include="GM.KYC.Identomat" Version="1.0.0" />

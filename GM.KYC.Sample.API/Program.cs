@@ -9,6 +9,7 @@ using GM.KYC.Identomat;
 using GM.KYC.Persistence;
 using GM.KYC.Sample.API;
 using GM.Secrets;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -33,22 +34,23 @@ builder.Services
     })
     .AddKycPersistence(o => o.UseInMemoryDatabase("kyc-sample")); // demo store; use Npgsql/SqlServer in prod
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
+
+// Liveness must not depend on downstream dependencies, so it runs no checks; readiness runs
+// every registered health check (none here yet). See engineering baseline §11.
+app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false });
+app.MapHealthChecks("/health/ready");
 
 app.MapGet("/", () => Results.Ok(new
 {
     message = "GM.KYC sample — Identomat verification",
-    endpoints = new[]
-    {
-        "POST /kyc/sessions                    { applicantReference } → start a session (returns widget URL)",
-        "POST /kyc/sessions/{id}/documents     multipart 'file' + 'type' → normalize + store + submit a document",
-        "GET  /kyc/sessions/{id}               → current status",
-        "POST /kyc/webhooks/identomat          Identomat callback (signature-verified, deduped)",
-    },
+    endpoints = Endpoints,
 }));
 
 // Start a verification. The response carries the hosted-widget URL to redirect the applicant to.
-app.MapPost("/kyc/sessions", async (StartSessionRequest body, IKycVerificationService kyc, CancellationToken ct) =>
+app.MapPost("/api/v1/kyc-sessions", async (StartSessionRequest body, IKycVerificationService kyc, CancellationToken ct) =>
 {
     var session = await kyc.InitiateVerificationAsync(
         new InitiateVerificationRequest { ApplicantReference = body.ApplicantReference }, ct);
@@ -56,7 +58,7 @@ app.MapPost("/kyc/sessions", async (StartSessionRequest body, IKycVerificationSe
 });
 
 // Submit a document image — normalized (resize + EXIF/GPS strip) and stored before submission.
-app.MapPost("/kyc/sessions/{id}/documents", async (string id, IFormFile file, DocumentType type, IKycVerificationService kyc, CancellationToken ct) =>
+app.MapPost("/api/v1/kyc-sessions/{id}/documents", async (string id, IFormFile file, DocumentType type, IKycVerificationService kyc, CancellationToken ct) =>
 {
     await using var stream = file.OpenReadStream();
     var document = await kyc.SubmitDocumentAsync(new SubmitDocumentRequest
@@ -71,14 +73,14 @@ app.MapPost("/kyc/sessions/{id}/documents", async (string id, IFormFile file, Do
 }).DisableAntiforgery();
 
 // Current status.
-app.MapGet("/kyc/sessions/{id}", async (string id, IKycVerificationService kyc, CancellationToken ct) =>
+app.MapGet("/api/v1/kyc-sessions/{id}", async (string id, IKycVerificationService kyc, CancellationToken ct) =>
 {
     var result = await kyc.GetVerificationStatusAsync(id, ct);
     return Results.Ok(new { status = result.Status.ToString(), result.RejectionCode, result.RejectionReason });
 });
 
 // Identomat webhook: verify signature, dedupe (at-least-once), fetch + record the result.
-app.MapPost("/kyc/webhooks/identomat", async (HttpRequest request, IKycWebhookProcessor processor, IOptions<IdentomatOptions> options, CancellationToken ct) =>
+app.MapPost("/api/v1/kyc-webhooks/identomat", async (HttpRequest request, IKycWebhookProcessor processor, IOptions<IdentomatOptions> options, CancellationToken ct) =>
 {
     using var reader = new StreamReader(request.Body);
     var rawBody = await reader.ReadToEndAsync(ct);
@@ -95,9 +97,26 @@ app.MapPost("/kyc/webhooks/identomat", async (HttpRequest request, IKycWebhookPr
     }
 }).DisableAntiforgery();
 
-app.Run();
-
-public sealed record StartSessionRequest(string ApplicantReference);
+await app.RunAsync();
 
 // Exposed so the test project can spin the app up with GmWebApplicationFactory.
-public partial class Program;
+public partial class Program
+{
+    // Hoisted out of the '/' handler (CA1861): a fresh array per request is unnecessary allocation
+    // for a constant, read-only payload.
+    private static readonly string[] Endpoints =
+    [
+        "POST /api/v1/kyc-sessions                    { applicantReference } → start a session (returns widget URL)",
+        "POST /api/v1/kyc-sessions/{id}/documents     multipart 'file' + 'type' → normalize + store + submit a document",
+        "GET  /api/v1/kyc-sessions/{id}               → current status",
+        "POST /api/v1/kyc-webhooks/identomat          Identomat callback (signature-verified, deduped)",
+    ];
+
+    // Only used as a WebApplicationFactory<Program> marker; never instantiated directly.
+    protected Program() { }
+}
+
+namespace GM.KYC.Sample.API
+{
+    public sealed record StartSessionRequest(string ApplicantReference);
+}

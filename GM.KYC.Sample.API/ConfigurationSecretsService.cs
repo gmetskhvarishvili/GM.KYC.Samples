@@ -13,6 +13,9 @@ internal sealed class ConfigurationSecretsService(IConfiguration configuration) 
     public Task<string?> GetSecretAsync(string name, CancellationToken cancellationToken = default) =>
         Task.FromResult(configuration[$"Secrets:{name}"] ?? configuration[name]);
 
+    public Task<T?> GetSecretAsync<T>(string name, CancellationToken cancellationToken = default) =>
+        Task.FromResult(configuration.GetSection($"Secrets:{name}").Get<T>());
+
     public Task<string> GetRequiredSecretAsync(string name, CancellationToken cancellationToken = default)
     {
         var value = configuration[$"Secrets:{name}"] ?? configuration[name];
@@ -20,7 +23,4 @@ internal sealed class ConfigurationSecretsService(IConfiguration configuration) 
             ? throw new InvalidOperationException($"Secret '{name}' is not configured.")
             : Task.FromResult(value);
     }
-
-    public Task<T?> GetSecretAsync<T>(string name, CancellationToken cancellationToken = default) =>
-        Task.FromResult(configuration.GetSection($"Secrets:{name}").Get<T>());
 }
