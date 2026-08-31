@@ -24,8 +24,8 @@
         <!-- The GM testing kit, published earlier this batch. -->
         <PackageReference Include="GM.Testing" Version="1.0.0" />
         <PackageReference Include="GM.Testing.AspNetCore" Version="1.0.0" />
-        <PackageReference Include="GM.KYC" Version="1.0.0" />
-        <PackageReference Include="GM.KYC.Identomat" Version="1.0.0" />
+        <PackageReference Include="GM.KYC" Version="1.0.1" />
+        <PackageReference Include="GM.KYC.Identomat" Version="1.0.1" />
     </ItemGroup>
 
     <ItemGroup>

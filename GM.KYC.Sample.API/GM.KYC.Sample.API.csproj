@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="GM.KYC" Version="1.0.0" />
-        <PackageReference Include="GM.KYC.Identomat" Version="1.0.0" />
-        <PackageReference Include="GM.KYC.Persistence" Version="1.0.0" />
+        <PackageReference Include="GM.KYC" Version="1.0.1" />
+        <PackageReference Include="GM.KYC.Identomat" Version="1.0.1" />
+        <PackageReference Include="GM.KYC.Persistence" Version="1.0.1" />
         <PackageReference Include="GM.FileStorage.Local" Version="1.1.1" />
         <PackageReference Include="GM.Caching" Version="1.0.1" />
         <PackageReference Include="GM.DistributedLock" Version="1.0.2" />
