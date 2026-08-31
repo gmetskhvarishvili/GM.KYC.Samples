@@ -8,11 +8,13 @@ infra it needs (GM.Idempotency for webhook dedup, GM.FileStorage.Local, a config
 `ISecretsService`) — and exposes the KYC flow:
 
 ```
-POST /kyc/sessions                 { applicantReference }        → start a session (returns the widget URL)
-POST /kyc/sessions/{id}/documents  multipart 'file' + 'type'     → normalize + store + submit a document
-GET  /kyc/sessions/{id}                                          → current status
-POST /kyc/webhooks/identomat       Identomat callback            → signature-verified, deduped, recorded
+POST /api/v1/kyc-sessions                 { applicantReference }        → start a session (returns the widget URL)
+POST /api/v1/kyc-sessions/{id}/documents  multipart 'file' + 'type'     → normalize + store + submit a document
+GET  /api/v1/kyc-sessions/{id}                                          → current status
+POST /api/v1/kyc-webhooks/identomat       Identomat callback            → signature-verified, deduped, recorded
 ```
+
+Health checks are exposed at `/health/live` (no downstream checks) and `/health/ready`.
 
 ```bash
 dotnet run --project GM.KYC.Sample.API
@@ -28,5 +30,4 @@ dotnet run --project GM.KYC.Sample.API
 end to end without calling Identomat. It's a nice demonstration of the GM.Testing kit (published earlier)
 testing a GM.* service.
 
-> The projects reference the sibling `GM.KYC` source repo by project path. Once the KYC packages are
-> published, swap the `ProjectReference`s for `PackageReference`s.
+> The projects reference the published `GM.KYC*` NuGet packages.

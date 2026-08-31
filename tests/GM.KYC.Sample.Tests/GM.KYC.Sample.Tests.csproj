@@ -5,20 +5,27 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+
+        <!--
+          Warnings are errors here too (inherited from Directory.Build.props). CA1707 is relaxed for
+          test code only: the mandated test name style is Method_Scenario_ExpectedResult, which uses
+          underscores by design.
+        -->
+        <NoWarn>$(NoWarn);CA1707</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-        <PackageReference Include="xunit" Version="2.9.2" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+        <PackageReference Include="xunit" Version="2.9.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <!-- The GM testing kit, published earlier this batch. -->
         <PackageReference Include="GM.Testing" Version="1.0.0" />
         <PackageReference Include="GM.Testing.AspNetCore" Version="1.0.0" />
-        <PackageReference Include="GM.KYC" Version="1.0.0" />
-        <PackageReference Include="GM.KYC.Identomat" Version="1.0.0" />
+        <PackageReference Include="GM.KYC" Version="1.0.1" />
+        <PackageReference Include="GM.KYC.Identomat" Version="1.0.1" />
     </ItemGroup>
 
     <ItemGroup>
