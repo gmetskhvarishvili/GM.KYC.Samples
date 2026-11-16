@@ -17,4 +17,19 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
+  <!--
+    Accepted risk, same as GM.Documents / GM.KYC: SixLabors.ImageSharp < 3.2.0 (pulled in through
+    GM.KYC -> GM.Documents.Images) has published advisories, but 3.2.0+ refuses to build without a Six
+    Labors license key, so the GM packages stay on 3.1.x. GM.Documents.Images 1.0.2+ only decodes
+    JPEG/PNG/WebP, which keeps the TIFF decoder bugs unreachable.
+  -->
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-gwg2-r3hj-4w44" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-wmxv-xphr-5c9g" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-j3p4-wp97-rph4" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-j9gm-c75j-xc9q" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-jjfr-hcj7-qf5w" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-v76p-62qx-wwq2" />
+  </ItemGroup>
+
 </Project>
