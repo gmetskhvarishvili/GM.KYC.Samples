@@ -11,9 +11,9 @@
         <PackageReference Include="GM.KYC.Identomat" Version="1.0.2" />
         <PackageReference Include="GM.KYC.Persistence" Version="1.0.2" />
         <PackageReference Include="GM.FileStorage.Local" Version="1.1.1" />
-        <PackageReference Include="GM.Caching" Version="1.0.1" />
-        <PackageReference Include="GM.DistributedLock" Version="1.0.2" />
-        <PackageReference Include="GM.Idempotency" Version="1.0.1" />
+        <PackageReference Include="GM.Caching" Version="1.2.0" />
+        <PackageReference Include="GM.DistributedLock" Version="1.2.0" />
+        <PackageReference Include="GM.Idempotency" Version="1.1.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
     </ItemGroup>
 
